@@ -40,6 +40,9 @@ forms-flow-forms:
   admin:
     email: "me@defineme.com"
     password: "admin"
+  # -- form.io JWT signing secret, shared by forms-flow-forms, forms-flow-api and the web app.
+  # Empty keeps the historical default "<namespace>-jwt-secret", which is guessable: set it.
+  jwtSecret: ""
   service:
     name: forms-flow-forms
     port: "3001"
