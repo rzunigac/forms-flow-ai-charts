@@ -528,6 +528,22 @@ mfe:
 ## @param themeCss Base theme stylesheet (CSS text) to serve instead of the image's. Branding (colors,
 ##   logo, font) is web.custom_theme_url.
 themeCss: ""
+## Content-Security-Policy. Images built from our forks; AOT's images ignore these.
+## @param csp.mode report-only: browsers block nothing and report violations, which the web pod logs as
+##   JSON lines with "type":"csp-report"; enforce: browsers block them; off: no policy
+## @param csp.connectSrc Extra sources per directive, space-separated (also scriptSrc, styleSrc, fontSrc,
+##   imgSrc, frameSrc, frameAncestors). The policy already allows the page's origin and the origins of
+##   the configured URLs (forms, Keycloak, APIs, BPM). A form that calls an external API from the
+##   browser needs it here, e.g. connectSrc: "https://api.example.org".
+csp:
+  mode: report-only
+  scriptSrc: ""
+  styleSrc: ""
+  fontSrc: ""
+  imgSrc: ""
+  connectSrc: ""
+  frameSrc: ""
+  frameAncestors: ""
 webclient: "{{ .Chart.Name }}"
 webname: formsflow
 UserAccesPermissions: ""

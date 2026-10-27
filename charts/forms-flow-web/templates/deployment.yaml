@@ -332,6 +332,17 @@ spec:
           - name: THEME_CSS_FILE
             value: /etc/formsflow/theme/theme.css
           {{- end }}
+          {{- if .Values.csp.mode }}
+          - name: CSP_MODE
+            value: {{ .Values.csp.mode | quote }}
+          {{- end }}
+          {{- $cspEnv := dict "scriptSrc" "CSP_SCRIPT_SRC" "styleSrc" "CSP_STYLE_SRC" "fontSrc" "CSP_FONT_SRC" "imgSrc" "CSP_IMG_SRC" "connectSrc" "CSP_CONNECT_SRC" "frameSrc" "CSP_FRAME_SRC" "frameAncestors" "CSP_FRAME_ANCESTORS" }}
+          {{- range $key, $sources := omit .Values.csp "mode" }}
+          {{- if $sources }}
+          - name: {{ required (printf "csp.%s is not a CSP setting" $key) (get $cspEnv $key) }}
+            value: {{ $sources | quote }}
+          {{- end }}
+          {{- end }}
           {{- if .Values.extraEnvVars }}
           {{- include "common.tplvalues.render" (dict "value" .Values.extraEnvVars "context" $) | nindent 8 }}
           {{- end }}
