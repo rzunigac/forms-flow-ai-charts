@@ -319,6 +319,19 @@ spec:
               configMapKeyRef:
                 key: URL_PRIVACY_POLICY
                 name: "{{ .Chart.Name }}"          
+          {{- /* Read by the image's startup script (images built from our forks; others ignore them). */}}
+          {{- range $name, $url := .Values.mfe.urls }}
+          - name: MF_FORMSFLOW_{{ upper $name }}_URL
+            value: {{ $url | quote }}
+          {{- end }}
+          {{- if .Values.mfe.allowedOrigins }}
+          - name: MFE_ALLOWED_ORIGINS
+            value: {{ .Values.mfe.allowedOrigins | quote }}
+          {{- end }}
+          {{- if .Values.themeCss }}
+          - name: THEME_CSS_FILE
+            value: /etc/formsflow/theme/theme.css
+          {{- end }}
           {{- if .Values.extraEnvVars }}
           {{- include "common.tplvalues.render" (dict "value" .Values.extraEnvVars "context" $) | nindent 8 }}
           {{- end }}
@@ -349,6 +362,17 @@ spec:
           - name: forms-flow-web-template-configuration
             mountPath: /tmp/forms-flow-web-config.template
             readOnly: true   
+          {{- /* The same template for the image's startup script, which writes config.js before nginx
+               starts (the postStart hook stays for images without that script). */}}
+          - name: forms-flow-web-template-configuration
+            mountPath: /etc/formsflow/config.template.js
+            subPath: config.js
+            readOnly: true
+          {{- if .Values.themeCss }}
+          - name: theme
+            mountPath: /etc/formsflow/theme
+            readOnly: true
+          {{- end }}
             {{- if .Values.extraVolumeMounts }}
             {{- include "common.tplvalues.render" (dict "value" .Values.extraVolumeMounts "context" $) | nindent 12 }}
             {{- end }}
@@ -359,6 +383,11 @@ spec:
           defaultMode: 420
       - name: tmpfs
         emptyDir: {}
+      {{- if .Values.themeCss }}
+      - name: theme
+        configMap:
+          name: {{ printf "%s-theme" (include "common.names.fullname" .) }}
+      {{- end }}
         {{- if .Values.extraVolumes }}
         {{- include "common.tplvalues.render" (dict "value" .Values.extraVolumes "context" $) | nindent 8 }}
         {{- end }}

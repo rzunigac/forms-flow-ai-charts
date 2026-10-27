@@ -1,0 +1,11 @@
+{{- if .Values.themeCss }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ printf "%s-theme" (include "common.names.fullname" .) }}
+  namespace: {{ include "common.names.namespace" . | quote }}
+  labels: {{- include "common.labels.standard" ( dict "customLabels" .Values.commonLabels "context" $ ) | nindent 4 }}
+    app.kubernetes.io/component: forms-flow-web
+data:
+  theme.css: {{ .Values.themeCss | quote }}
+{{- end }}

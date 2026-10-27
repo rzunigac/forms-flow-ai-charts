@@ -516,6 +516,18 @@ web:
   public_workflow_enabled: "false"
   opentelemetry_service: "false"
 config_path: /usr/share/nginx/html/config/
+## Micro-frontends and theme. Images built from our forks carry every bundle and the base theme, and
+## load them from their own origin; these values change that. AOT's images ignore them.
+## @param mfe.urls Where a micro-frontend loads from instead, by name: NAV, WEB, ADMIN, REVIEW,
+##   SUBMISSIONS, SERVICE, COMPONENTS. A same-origin path, or a URL under mfe.allowedOrigins;
+##   anything else stops the container.
+## @param mfe.allowedOrigins Space-separated origins mfe.urls may use, e.g. "https://mfe.example.org"
+mfe:
+  urls: {}
+  allowedOrigins: ""
+## @param themeCss Base theme stylesheet (CSS text) to serve instead of the image's. Branding (colors,
+##   logo, font) is web.custom_theme_url.
+themeCss: ""
 webclient: "{{ .Chart.Name }}"
 webname: formsflow
 UserAccesPermissions: ""
