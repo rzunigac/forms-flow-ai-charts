@@ -355,7 +355,7 @@ spec:
       volumes:
       - name: forms-flow-web-template-configuration
         configMap:
-          name: forms-flow-web-template-configuration
+          name: {{ printf "%s-template-configuration" (include "common.names.fullname" .) }}
           defaultMode: 420
       - name: tmpfs
         emptyDir: {}
