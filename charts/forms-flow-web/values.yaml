@@ -169,10 +169,12 @@ command: []
 args: []
 ## @param lifecycleHooks for the forms-flow-web container(s) to automate configuration before or after startup
 ##
+## Images built from our forks write config.js at start (escaped) from the same template, so the hook only
+## runs on images without that startup script.
 lifecycleHooks:
   postStart:
     exec:
-      command: ["/bin/sh", "-c", "envsubst < /tmp/{{.Chart.Name}}-config.template/config.js > {{.Values.config_path}}/config.js;" ]
+      command: ["/bin/sh", "-c", "[ -x /docker-entrypoint.d/40-formsflow-config.sh ] || envsubst < /tmp/{{.Chart.Name}}-config.template/config.js > {{.Values.config_path}}/config.js;" ]
 automountServiceAccountToken: true
 ## @param extraEnvVars Extra environment variables to be set on formsflow documents-api container
 ## Example:
