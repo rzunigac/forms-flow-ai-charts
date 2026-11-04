@@ -516,6 +516,15 @@ web:
   public_workflow_enabled: "false"
   opentelemetry_service: "false"
 config_path: /usr/share/nginx/html/config/
+## Keycloak token on requests to other origins.
+## @param bearerToken.enabled Add "Authorization: Bearer <user token>" to browser requests whose origin
+##   matches bearerToken.urls, e.g. a file storage gateway (form.io's url provider sends DELETE without
+##   credentials). Requests that already carry an Authorization header are left alone.
+## @param bearerToken.urls Origins, "http(s)://host[:port]", or "https://*.example.com" for subdomains. Only
+##   the origin is matched; a path is ignored. The gateway must allow the Authorization header (CORS).
+bearerToken:
+  enabled: false
+  urls: []
 webclient: "{{ .Chart.Name }}"
 webname: formsflow
 UserAccesPermissions: ""

@@ -319,6 +319,12 @@ spec:
               configMapKeyRef:
                 key: URL_PRIVACY_POLICY
                 name: "{{ .Chart.Name }}"          
+          {{- if .Values.bearerToken.enabled }}
+          - name: REACT_APP_BEARER_TOKEN_INJECTION_ENABLED
+            value: "true"
+          - name: REACT_APP_BEARER_TOKEN_URLS
+            value: {{ join "," .Values.bearerToken.urls | quote }}
+          {{- end }}
           {{- if .Values.extraEnvVars }}
           {{- include "common.tplvalues.render" (dict "value" .Values.extraEnvVars "context" $) | nindent 8 }}
           {{- end }}
